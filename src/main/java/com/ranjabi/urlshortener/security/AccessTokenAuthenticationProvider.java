@@ -29,11 +29,8 @@ public class AccessTokenAuthenticationProvider implements AuthenticationProvider
                 .findByToken(token)
                 .orElseThrow(() -> new BadCredentialsException("Invalid access token"));
 
-        // one time token
-        repository.deleteById(accessToken.getId());
-
         if (new Date().after(accessToken.getExpiresAt())) {
-            throw new BadCredentialsException("Invalid access token");
+            throw new BadCredentialsException("Token expired");
         }
 
         authentication.setAuthenticated(true);
