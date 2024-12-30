@@ -1,4 +1,4 @@
-package com.ranjabi.urlshortener.entity;
+package com.ranjabi.urlshortener.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
