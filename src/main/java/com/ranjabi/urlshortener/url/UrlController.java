@@ -12,6 +12,7 @@ import com.ranjabi.urlshortener.entities.Url;
 @RestController
 @RequestMapping(path="/urls")
 public class UrlController {
+    
     @Autowired
     private UrlRepository urlRepository;
 

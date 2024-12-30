@@ -11,6 +11,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter @NoArgsConstructor
 public class Url {
+    
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
