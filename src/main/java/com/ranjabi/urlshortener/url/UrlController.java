@@ -1,6 +1,5 @@
 package com.ranjabi.urlshortener.url;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +11,11 @@ import com.ranjabi.urlshortener.entities.Url;
 @RestController
 @RequestMapping(path="/urls")
 public class UrlController {
-    
-    @Autowired
-    private UrlRepository urlRepository;
+    private final UrlRepository urlRepository;
+
+    public UrlController(UrlRepository urlRepository) {
+        this.urlRepository = urlRepository;
+    }
 
     @GetMapping
     public Iterable<Url> getAllUrls() {

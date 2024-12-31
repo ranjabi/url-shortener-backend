@@ -1,4 +1,4 @@
-package com.ranjabi.urlshortener.security;
+package com.ranjabi.urlshortener.user;
 
 import java.util.Collection;
 import java.util.Collections;
