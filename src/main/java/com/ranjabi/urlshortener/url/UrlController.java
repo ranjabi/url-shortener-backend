@@ -43,8 +43,6 @@ public class UrlController {
     public ResponseEntity<SuccessResponse<Url>> addNewUrl(@RequestParam String path) {
         Url newUrl = this.urlService.save(path);
 
-        var res = new SuccessResponse<Url>("Url has been created", newUrl);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.of("Url has been created", newUrl));
     }
 }

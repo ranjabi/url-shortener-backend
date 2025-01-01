@@ -24,10 +24,8 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<SuccessResponse<Void>> register(@RequestBody AuthRequest request) {
         userService.saveUser(request.username, request.password);
-
-        var res = new SuccessResponse<Void>("Account has been created");
         
-        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.ofMessage("Account has been created"));
     }
 
     @PostMapping("/login")
