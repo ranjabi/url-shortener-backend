@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // TODO double logic in securityConfig
     private final AuthenticationEntryPoint authenticationEntryPoint = (request, response, exception) -> {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        ErrorResponse<Void> errorResponse = new ErrorResponse<Void>(exception.getMessage());
+        ErrorResponse<Void> errorResponse = ErrorResponse.ofMessage(exception.getMessage());
 
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));

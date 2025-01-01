@@ -78,7 +78,7 @@ public class SecurityConfig {
         public void commence(HttpServletRequest request, HttpServletResponse response,
                 AuthenticationException authException) throws IOException, ServletException {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            ErrorResponse<Void> errorResponse = new ErrorResponse<Void>("Authentication Failed: Missing or Invalid Credentials");
+            ErrorResponse<Void> errorResponse = ErrorResponse.ofMessage("Authentication Failed: Missing or Invalid Credentials");
 
             response.setContentType("application/json");
             response.getWriter().write(objectMapper.writeValueAsString(errorResponse));

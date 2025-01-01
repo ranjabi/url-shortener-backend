@@ -15,21 +15,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<ErrorResponse<Void>> handleMalformedJwtException(MalformedJwtException e) {
-        ErrorResponse<Void> body = new ErrorResponse<Void>("Malformed JWT token");
+        ErrorResponse<Void> body = ErrorResponse.ofMessage("Malformed JWT token");
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<ErrorResponse<Void>> handleDuplicateUsernameException(DuplicateUsernameException e) {
-        ErrorResponse<Void> body = new ErrorResponse<Void>("Username already exists");
+        ErrorResponse<Void> body = ErrorResponse.ofMessage("Username already exists");
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
     
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse<Void>> handleBadCredentialsException(BadCredentialsException e) {
-        ErrorResponse<Void> body = new ErrorResponse<Void>("Username/password is wrong");
+        ErrorResponse<Void> body = ErrorResponse.ofMessage("Username/password is wrong");
 
         return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
