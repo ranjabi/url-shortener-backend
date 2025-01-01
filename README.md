@@ -14,6 +14,7 @@
 - `POST /logout`: Logout
 
 ### URL Shortener
-- `GET /urls`: Get all short url (authenticated)
+- `GET /urls`: Get all short url created by a user (authenticated)
+- `GET /urls/{shortCode}`: Get original url with redirect (anonymous)
 - `POST /urls`: Create a new short url (allow anonymous creation)
 - `DELETE /urls/{id}`: Delete a short url (authenticated)

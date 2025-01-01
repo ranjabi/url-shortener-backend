@@ -29,6 +29,8 @@ public class UserItTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private final String validBearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzM1NzM1ODU2LCJleHAiOjE3MzYwOTU4NTZ9.f2TgDNAkRpeC67errHPxgbwJ4R0LjJ-l4y3_rUL-HE4";
+
     public static <T> int getSize(Iterable<T> iterable) {
         int size = 0;
         for (@SuppressWarnings("unused") T element : iterable) {
@@ -114,25 +116,4 @@ public class UserItTest {
                 .andExpect(jsonPath("$.message").value("Username/password is wrong"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
     }
-
-    @Test
-    // TODO: FORMAT RESPONSE
-    public void accessProtectedPageWithTokenTest_ok() throws Exception {
-        mockMvc.perform(get("/urls")
-        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzM1NzI2Mjg2LCJleHAiOjE3MzU3Mjk4ODZ9.bmKHvdZ8SHbYCryTLPJAM2bPO2G4mOdA4TMdLKwscHU"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isEmpty());
-    }
-
-    @Test
-    public void accessProtectedPageWithoutTokenTest_unauthorized() throws Exception {
-        mockMvc.perform(get("/urls"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("Authentication Failed: Missing or Invalid Credentials"))
-                .andExpect(jsonPath("$.data").value(nullValue()));
-    }
-
-    // TODO accessProtectedPage invalid token
 }

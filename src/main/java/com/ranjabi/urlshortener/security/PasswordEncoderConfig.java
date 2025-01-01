@@ -1,4 +1,4 @@
-package com.ranjabi.urlshortener.config;
+package com.ranjabi.urlshortener.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

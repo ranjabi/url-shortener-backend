@@ -1,5 +1,10 @@
 package com.ranjabi.urlshortener.entities;
 
+import java.util.Date;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,10 +24,22 @@ public class Url {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
-    private String path;
+    @Column(nullable = false)
+    private String originalUrl;
 
-    public Url(String path) {
-        this.path = path;
+    @Column(nullable = false, unique = true)
+    private String shortCode;
+
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column
+    private Date updatedAt;
+
+    public Url(String originalUrl, String shortCode) {
+        this.originalUrl = originalUrl;
+        this.shortCode = shortCode;
     }
 }

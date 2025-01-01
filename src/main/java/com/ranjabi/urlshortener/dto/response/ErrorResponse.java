@@ -17,4 +17,11 @@ public class ErrorResponse<T> {
         this.data = data;
     }
 
+    public static <T> ErrorResponse<T> ofMessage(String message) {
+        return new ErrorResponse<>(message, null);
+    }
+
+    public static <T> ErrorResponse<T> of(String message, T data) {
+        return new ErrorResponse<>(message, data);
+    }
 }

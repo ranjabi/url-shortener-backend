@@ -59,6 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        // TODO handle token expired
         try {
             var jwt = authHeader.substring(7);
             var username = jwtService.extractUsername(jwt);
