@@ -1,10 +1,12 @@
-package com.ranjabi.urlshortener.user;
+package com.ranjabi.urlshortener.authentication;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
 import com.ranjabi.urlshortener.entities.User;
+import com.ranjabi.urlshortener.user.UserRepository;
 
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {

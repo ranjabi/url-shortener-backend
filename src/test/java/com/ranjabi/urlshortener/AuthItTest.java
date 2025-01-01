@@ -2,7 +2,6 @@ package com.ranjabi.urlshortener;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -21,15 +20,13 @@ import com.ranjabi.urlshortener.user.UserRepository;
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class UserItTest {
+public class AuthItTest {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private MockMvc mockMvc;
-
-    private final String validBearerToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzM1NzM1ODU2LCJleHAiOjE3MzYwOTU4NTZ9.f2TgDNAkRpeC67errHPxgbwJ4R0LjJ-l4y3_rUL-HE4";
 
     public static <T> int getSize(Iterable<T> iterable) {
         int size = 0;
@@ -55,7 +52,7 @@ public class UserItTest {
                 }
                 """;
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
@@ -73,7 +70,7 @@ public class UserItTest {
                 }
                 """;
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isConflict())
@@ -91,7 +88,7 @@ public class UserItTest {
                 }
                 """;
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
@@ -108,7 +105,7 @@ public class UserItTest {
                 }
                 """;
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isUnauthorized())
