@@ -1,23 +1,38 @@
-package com.ranjabi.urlshortener.jwt;
+package com.ranjabi.urlshortener.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ranjabi.urlshortener.dto.response.ErrorResponse;
+
 import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    // TODO double logic in securityConfig
+    private final AuthenticationEntryPoint authenticationEntryPoint = (request, response, exception) -> {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        ErrorResponse<Void> errorResponse = new ErrorResponse<Void>(exception.getMessage());
+
+        response.setContentType("application/json");
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+    };
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     private final JwtService jwtService;
@@ -40,7 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("No bearer detected");
             filterChain.doFilter(request, response);
             return;
         }
@@ -66,6 +80,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
+        } catch (AuthenticationException e) {
+            authenticationEntryPoint.commence(request, response, e);
         } catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }

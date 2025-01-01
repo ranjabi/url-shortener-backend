@@ -1,13 +1,17 @@
 package com.ranjabi.urlshortener.user;
 
+import java.sql.SQLException;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ranjabi.urlshortener.dto.response.AuthResponse;
 import com.ranjabi.urlshortener.entities.User;
-import com.ranjabi.urlshortener.jwt.JwtService;
-import com.ranjabi.urlshortener.responses.AuthResponse;
+import com.ranjabi.urlshortener.exception.DuplicateUsernameException;
+import com.ranjabi.urlshortener.security.JwtService;
 
 @Service
 public class UserService {
@@ -16,7 +20,8 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -29,18 +34,23 @@ public class UserService {
                         username,
                         password));
         User authenticatedUser = userRepository.findByUsername(username)
-        .orElseThrow();
+                .orElseThrow();
 
         String jwtToken = jwtService.generateToken(new UserAdapter(authenticatedUser));
 
         return new AuthResponse(authenticatedUser, jwtToken);
     }
 
-    public User saveUser(String username, String password) {
-        var user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
+    public void saveUser(String username, String password) {
+        try {
+            User newUser = new User(username, passwordEncoder.encode(password));
+            userRepository.save(newUser);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMostSpecificCause().getClass().getName().equals("org.postgresql.util.PSQLException") && ((SQLException) e.getMostSpecificCause()).getSQLState().equals("23505")) {
+                throw new DuplicateUsernameException("Username already exists");
+            }
 
-        return userRepository.save(user);
+            throw new RuntimeException("DATABASE ERROR: " + e.getMessage(), e);
+        }
     }
 }

@@ -32,12 +32,17 @@ public class User {
     private String password;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(updatable = false, nullable = false)
     private Date createdAt;
 
     @UpdateTimestamp
     @Column
     private Date updatedAt;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public String getUsername() {
         return this.username;

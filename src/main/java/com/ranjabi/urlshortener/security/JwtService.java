@@ -1,4 +1,4 @@
-package com.ranjabi.urlshortener.jwt;
+package com.ranjabi.urlshortener.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

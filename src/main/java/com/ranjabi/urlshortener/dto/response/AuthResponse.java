@@ -1,4 +1,4 @@
-package com.ranjabi.urlshortener.responses;
+package com.ranjabi.urlshortener.dto.response;
 
 import com.ranjabi.urlshortener.entities.User;
 
