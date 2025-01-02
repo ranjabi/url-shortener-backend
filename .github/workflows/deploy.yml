@@ -84,7 +84,12 @@ jobs:
           
           echo "Stopping containers..."
           docker compose down --volumes
+
           echo "Starting containers..."
           docker compose --env-file .env.prod up --build -d
+
+          echo "Deleting unused images..."
+          docker image prune -a -f
+          
           echo "Containers status:"
           docker ps

@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +39,14 @@ public class Url {
     @UpdateTimestamp
     @Column
     private Date updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User user;
+
+    public Url(String originalUrl) {
+        this.originalUrl = originalUrl;
+    }
 
     public Url(String originalUrl, String shortCode) {
         this.originalUrl = originalUrl;

@@ -29,4 +29,8 @@ public class UserAdapter implements UserDetails {
     public String getUsername() {
         return user.getUsername();
     }
+
+    public User getUser() {
+        return user;
+    }
 }

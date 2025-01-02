@@ -1,5 +1,6 @@
 package com.ranjabi.urlshortener.url;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.ranjabi.urlshortener.entities.Url;
+import com.ranjabi.urlshortener.entities.User;
 
 @Service
 public class UrlService {
@@ -16,8 +18,8 @@ public class UrlService {
         this.urlRepository = urlRepository;
     }
 
-    public Iterable<Url> getAllUrls() {
-        return urlRepository.findAll();
+    public List<Url> getAllUrlsByUserId(Integer userId) {
+        return urlRepository.findByUserId(userId);
     }
 
     public String getOriginalUrl(String shortCode) throws NoSuchElementException {
@@ -29,9 +31,16 @@ public class UrlService {
         return UUID.randomUUID().toString().substring(0, 6);
     }
 
-    public Url save(String originalUrl) {
-        Url newUrl = this.urlRepository.save(new Url(originalUrl, this.generateShortCode()));
-        
-        return newUrl;
+    public Url save(Url url) {
+        url.setShortCode(generateShortCode());
+
+        return urlRepository.save(url);
+    }
+
+    public Url save(Url url, User user) {
+        url.setShortCode(generateShortCode());
+        url.setUser(user);
+
+        return urlRepository.save(url);
     }
 }
