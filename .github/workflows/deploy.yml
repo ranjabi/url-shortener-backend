@@ -59,3 +59,32 @@ jobs:
         push: true
         tags: ranjabi/url-shortener-backend:latest,ranjabi/url-shortener-backend:${{ env.DOCKER_TAG }}
         platform: linux/amd64
+
+    - name: Copy .env.prod and docker-compose.yml to VM
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USERNAME }}
+        password: ${{ secrets.VM_PASSWORD }}
+        source: ".env.prod,docker-compose.yml"
+        target: /home/url-shortener-backend
+
+    - name: Deploy on VM
+      uses: appleboy/ssh-action@v1.2.0
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USERNAME }}
+        password: ${{ secrets.VM_PASSWORD }}
+        script: |
+          cd ../home/url-shortener-backend
+          echo ".env.prod:"
+          cat .env.prod
+          echo "docker-compose.yml:"
+          cat docker-compose.yml
+          
+          echo "Stopping containers..."
+          docker compose down --volumes
+          echo "Starting containers..."
+          docker compose --env-file .env.prod up --build -d
+          echo "Containers status:"
+          docker ps
