@@ -52,6 +52,8 @@ public class SecurityConfig {
                 .csrf(configurer -> configurer.disable()) // for POST requests via Postman
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/urls/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/urls").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -2,6 +2,7 @@ package com.ranjabi.urlshortener.authentication;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ranjabi.urlshortener.dto.request.AuthRequest;
 import com.ranjabi.urlshortener.dto.response.AuthResponse;
+import com.ranjabi.urlshortener.dto.response.ErrorResponse;
 import com.ranjabi.urlshortener.dto.response.SuccessResponse;
 import com.ranjabi.urlshortener.user.UserService;
 
@@ -32,7 +34,7 @@ public class AuthController {
 
     @Operation(summary = "Register new user")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "201", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "409", description = "Username already exists", content = @Content) })
     // TODO 400 bad request
     @PostMapping("/register")
@@ -48,8 +50,13 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Username/password is wrong", content = @Content) })
     // TODO 400 bad request
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponse<AuthResponse>> login(@RequestBody AuthRequest request) {
-        AuthResponse response = authService.authenticate(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(SuccessResponse.of("", response));
+    public ResponseEntity<Object> login(@RequestBody AuthRequest request) {
+        try {
+            AuthResponse response = authService.authenticate(request.getUsername(), request.getPassword());
+
+            return ResponseEntity.ok(SuccessResponse.of("", response));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.ofMessage("Username/password is wrong"));
+        }
     }
 }

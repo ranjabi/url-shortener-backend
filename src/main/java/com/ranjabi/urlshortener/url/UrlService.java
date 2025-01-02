@@ -1,5 +1,6 @@
 package com.ranjabi.urlshortener.url;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,7 +16,11 @@ public class UrlService {
         this.urlRepository = urlRepository;
     }
 
-    public String getOriginalUrl(String shortCode) {
+    public Iterable<Url> getAllUrls() {
+        return urlRepository.findAll();
+    }
+
+    public String getOriginalUrl(String shortCode) throws NoSuchElementException {
         Optional<Url> url = urlRepository.findByShortCode(shortCode);
         return url.get().getOriginalUrl();
     }   

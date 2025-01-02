@@ -26,6 +26,12 @@ public class UrlController {
         this.urlService = urlService;
     }
 
+    @GetMapping
+    public ResponseEntity<SuccessResponse<Iterable<Url>>> getAllUrls() {
+        Iterable<Url> urls = urlService.getAllUrls();
+        return ResponseEntity.ok(SuccessResponse.ofBody(urls));
+    }
+
     // FIXME POST /url/asd return 200
     @GetMapping("/{shortCode}")
     public ResponseEntity<Object> redirectToOriginalUrl(@PathVariable String shortCode, HttpServletResponse response) throws IOException {
@@ -44,5 +50,10 @@ public class UrlController {
         Url newUrl = this.urlService.save(path);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.of("Url has been created", newUrl));
+    }
+
+    @GetMapping("/protected")
+    public String protectedRoute() {
+        return "Protected";
     }
 }

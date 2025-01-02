@@ -16,6 +16,10 @@ public class SuccessResponse<T> {
         return new SuccessResponse<>(message, null);
     }
 
+    public static <T> SuccessResponse<T> ofBody(T body) {
+        return new SuccessResponse<>("", body);
+    }
+
     public static <T> SuccessResponse<T> of(String message, T data) {
         return new SuccessResponse<>(message, data);
     }

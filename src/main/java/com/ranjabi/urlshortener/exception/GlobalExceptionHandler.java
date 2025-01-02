@@ -8,16 +8,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.ranjabi.urlshortener.dto.response.ErrorResponse;
 
-import io.jsonwebtoken.MalformedJwtException;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MalformedJwtException.class)
-    public ResponseEntity<ErrorResponse<Void>> handleMalformedJwtException(MalformedJwtException e) {
-        ErrorResponse<Void> body = ErrorResponse.ofMessage("Malformed JWT token");
+    @ExceptionHandler(JwtProcessingException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleJwtProcessingException(JwtProcessingException e) {
+        ErrorResponse<Void> body = ErrorResponse.ofMessage(e.getMessage());
 
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(DuplicateUsernameException.class)
@@ -25,12 +23,5 @@ public class GlobalExceptionHandler {
         ErrorResponse<Void> body = ErrorResponse.ofMessage("Username already exists");
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
-    }
-    
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse<Void>> handleBadCredentialsException(BadCredentialsException e) {
-        ErrorResponse<Void> body = ErrorResponse.ofMessage("Username/password is wrong");
-
-        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 }
