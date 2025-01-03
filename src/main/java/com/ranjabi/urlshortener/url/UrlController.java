@@ -17,13 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ranjabi.urlshortener.authentication.UserAdapter;
 import com.ranjabi.urlshortener.dto.response.ErrorResponse;
+import com.ranjabi.urlshortener.dto.response.Response;
 import com.ranjabi.urlshortener.dto.response.SuccessResponse;
 import com.ranjabi.urlshortener.entities.Url;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping(path="/urls")
+@RequestMapping(path = "/urls")
 public class UrlController {
     private final UrlService urlService;
 
@@ -31,34 +38,43 @@ public class UrlController {
         this.urlService = urlService;
     }
 
+    @Operation(summary = "Get all user's short codes", security = { @SecurityRequirement(name = "bearer-key") })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content) })
     @GetMapping
-    public ResponseEntity<SuccessResponse<List<Url>>> getAllUrls() {
+    public ResponseEntity<Response<List<Url>>> getAllUrls() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        
+
         UserAdapter principal = (UserAdapter) authentication.getPrincipal();
         List<Url> urls = urlService.getAllUrlsByUserId(principal.getUser().getId());
 
         return ResponseEntity.ok(SuccessResponse.ofBody(urls));
     }
 
-    // FIXME POST /url/asd return 200
     @GetMapping("/{shortCode}")
-    public ResponseEntity<Object> redirectToOriginalUrl(@PathVariable String shortCode, HttpServletResponse response) throws IOException {
+    public ResponseEntity<Object> redirectToOriginalUrl(@PathVariable String shortCode, HttpServletResponse response)
+            throws IOException {
         try {
             String originalUrl = urlService.getOriginalUrl(shortCode);
             response.sendRedirect(originalUrl);
-    
+
             return ResponseEntity.status(HttpStatus.FOUND).build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.ofMessage("Url not found"));
         }
     }
 
+    // TODO request validation
+    @Operation(summary = "Add new url", security = { @SecurityRequirement(name = "bearer-key") })
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", useReturnTypeSchema = true) })
     @PostMapping
-    public ResponseEntity<SuccessResponse<Url>> addNewUrl(@RequestParam String path) {
+    public ResponseEntity<Response<Url>> addNewUrl(
+            @Parameter(description = "Original url to be shortened", required = true) @RequestParam String path) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Url newUrl;
-        
+
         if (authentication instanceof AnonymousAuthenticationToken) {
             newUrl = urlService.save(new Url(path));
         } else {
@@ -66,7 +82,7 @@ public class UrlController {
             newUrl = urlService.save(new Url(path), principal.getUser());
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.of("Url has been created", newUrl));
+        return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.of("Short url has been created", newUrl));
     }
 
     @GetMapping("/protected")

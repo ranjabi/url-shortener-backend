@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ranjabi.urlshortener.dto.request.AuthRequest;
 import com.ranjabi.urlshortener.dto.response.AuthResponse;
 import com.ranjabi.urlshortener.dto.response.ErrorResponse;
+import com.ranjabi.urlshortener.dto.response.Response;
 import com.ranjabi.urlshortener.dto.response.SuccessResponse;
 import com.ranjabi.urlshortener.user.UserService;
 
@@ -38,7 +39,7 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "Username already exists", content = @Content) })
     // TODO 400 bad request
     @PostMapping("/register")
-    public ResponseEntity<SuccessResponse<Void>> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<Response<Void>> register(@RequestBody AuthRequest request) {
         userService.saveUser(request.getUsername(), request.getPassword());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.ofMessage("Account has been created"));
@@ -50,7 +51,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Username/password is wrong", content = @Content) })
     // TODO 400 bad request
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<Response<AuthResponse>> login(@RequestBody AuthRequest request) {
         try {
             AuthResponse response = authService.authenticate(request.getUsername(), request.getPassword());
 

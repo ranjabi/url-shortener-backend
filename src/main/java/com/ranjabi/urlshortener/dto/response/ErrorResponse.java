@@ -3,7 +3,7 @@ package com.ranjabi.urlshortener.dto.response;
 import lombok.Data;
 
 @Data
-public class ErrorResponse<T> {
+public class ErrorResponse<T> implements Response<T> {
     private final String message;
     private final T data;
 
@@ -18,5 +18,15 @@ public class ErrorResponse<T> {
 
     public static <T> ErrorResponse<T> of(String message, T data) {
         return new ErrorResponse<>(message, data);
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public T getData() {
+        return data;
     }
 }
