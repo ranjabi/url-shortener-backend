@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/urls/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/urls").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
