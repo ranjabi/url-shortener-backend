@@ -2,8 +2,8 @@ build.run:
 	./gradlew clean build -x test
 	java -jar build/libs/urlshortener-0.0.1-SNAPSHOT.jar
 
-run:
-	set -o allexport; source .env.dev.local; set +o allexport; ./gradlew bootRun
+run.dev:
+	set -o allexport; source .env.dev.local; set +o allexport; ./gradlew bootRun --args='--spring.profiles.active=dev'
 
 docker.build:
 	docker build --no-cache -t ranjabi/urlshortener .

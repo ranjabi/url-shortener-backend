@@ -21,6 +21,7 @@ import com.ranjabi.urlshortener.dto.response.Response;
 import com.ranjabi.urlshortener.dto.response.SuccessResponse;
 import com.ranjabi.urlshortener.entities.Url;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,6 +53,10 @@ public class UrlController {
         return ResponseEntity.ok(SuccessResponse.ofBody(urls));
     }
 
+    @Operation(summary = "Redirect to original url", description = "Can't try inside swagger ui due to CORS policy. Please try it in the browser.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "Redirected to original url", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Short code not found", content = @Content) })
     @GetMapping("/{shortCode}")
     public ResponseEntity<Object> redirectToOriginalUrl(@PathVariable String shortCode, HttpServletResponse response)
             throws IOException {
@@ -66,7 +71,7 @@ public class UrlController {
     }
 
     // TODO request validation
-    @Operation(summary = "Add new url", security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(summary = "Add new url", description = "Unauthenticated user is allowed to create a short url.", security = { @SecurityRequirement(name = "bearer-key") })
     @ApiResponses({
             @ApiResponse(responseCode = "201", useReturnTypeSchema = true) })
     @PostMapping
@@ -85,6 +90,7 @@ public class UrlController {
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.of("Short url has been created", newUrl));
     }
 
+    @Hidden
     @GetMapping("/protected")
     public String protectedRoute() {
         return "Protected";
