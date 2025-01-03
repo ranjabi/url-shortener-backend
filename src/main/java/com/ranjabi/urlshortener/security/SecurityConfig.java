@@ -49,7 +49,7 @@ public class SecurityConfig {
 
         http
                 .exceptionHandling((exception) -> exception.authenticationEntryPoint(authenticationEntryPoint()))
-                .csrf(configurer -> configurer.disable()) // for POST requests via Postman
+                .csrf(configurer -> configurer.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/urls/**").permitAll()
