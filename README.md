@@ -1,20 +1,24 @@
 # URL Shortener
 
+<p align="center">
+  <img src="images/thumbnail.png" alt="Twitter Clone" style="width: 60%; height: 60%; align: center"/>
+</p>
+
+## Table of Contents
+ * [About The Project](#about-the-project)
+ * [Features](#features)
+    + [Build With](#build-with)
+
+## About The Project
+A URL shortener web application where anyone can create a shortened URL, but you need to create an account to save your list of generated short URLs.
+
 ## Features
-- Authentication (register, login, logout)
-- Create/edit/delete short link
-- API documentation using Swagger
-- Caching using Redis
+- Authentication (register, login)
+- Create short url
 - Containerization using Docker
+- API documentation using Swagger
 
-## API Endpoints
-### Authentication
-- `POST /register`: Register a new user
-- `POST /login`: Login and retrieve a JWT
-- `POST /logout`: Logout
-
-### URL Shortener
-- `GET /urls`: Get all short url created by a user (authenticated)
-- `GET /urls/{shortCode}`: Get original url with redirect (anonymous)
-- `POST /urls`: Create a new short url (allow anonymous creation)
-- `DELETE /urls/{id}`: Delete a short url (authenticated)
+### Build With
+- Java Sping Boot
+- PostgreSQL
+- CI/CD: Docker, Github Actions
