@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.ranjabi.urlshortener.dto.response.ErrorResponse;
 
+import jakarta.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -31,6 +33,15 @@ public class GlobalExceptionHandler {
         FieldError error = e.getFieldError();
         ErrorResponse<Void> body = ErrorResponse.ofMessage(error.getField() + " " + error.getDefaultMessage());
 
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleConstraintViolationException(ConstraintViolationException e) {
+        String[] parts = e.getMessage().split(":");
+        String errorMessage = parts.length > 1 ? parts[1].trim() : "";
+        ErrorResponse<Void> body = ErrorResponse.ofMessage(errorMessage);
+        
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }
