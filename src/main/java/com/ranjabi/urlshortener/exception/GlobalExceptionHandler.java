@@ -2,6 +2,8 @@ package com.ranjabi.urlshortener.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,5 +24,13 @@ public class GlobalExceptionHandler {
         ErrorResponse<Void> body = ErrorResponse.ofMessage("Username already exists");
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        FieldError error = e.getFieldError();
+        ErrorResponse<Void> body = ErrorResponse.ofMessage(error.getField() + " " + error.getDefaultMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }

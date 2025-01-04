@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ranjabi.urlshortener.dto.request.AuthRequest;
+import com.ranjabi.urlshortener.dto.request.AuthRequestDto;
 import com.ranjabi.urlshortener.dto.response.AuthResponse;
 import com.ranjabi.urlshortener.dto.response.ErrorResponse;
 import com.ranjabi.urlshortener.dto.response.Response;
@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/auth")
@@ -36,10 +37,10 @@ public class AuthController {
     @Operation(summary = "Register new user")
     @ApiResponses({
             @ApiResponse(responseCode = "201", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", description = "Request body is not valid", content = @Content),
             @ApiResponse(responseCode = "409", description = "Username already exists", content = @Content) })
-    // TODO 400 bad request
     @PostMapping("/register")
-    public ResponseEntity<Response<Void>> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<Response<Void>> register(@Valid @RequestBody AuthRequestDto request) {
         userService.saveUser(request.getUsername(), request.getPassword());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(SuccessResponse.ofMessage("Account has been created"));
@@ -49,9 +50,8 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", description = "Username/password is wrong", content = @Content) })
-    // TODO 400 bad request
     @PostMapping("/login")
-    public ResponseEntity<Response<AuthResponse>> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<Response<AuthResponse>> login(@RequestBody AuthRequestDto request) {
         try {
             AuthResponse response = authService.authenticate(request.getUsername(), request.getPassword());
 
