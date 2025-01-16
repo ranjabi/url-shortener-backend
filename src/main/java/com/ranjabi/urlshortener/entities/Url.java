@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,9 @@ public class Url {
     @JoinColumn(name = "created_by")
     private User user;
 
+    @Transient
+    private String shortUrl;
+
     public Url(String originalUrl) {
         this.originalUrl = originalUrl;
     }
@@ -51,5 +55,9 @@ public class Url {
     public Url(String originalUrl, String shortCode) {
         this.originalUrl = originalUrl;
         this.shortCode = shortCode;
+    }
+
+    public void setShortUrl(String serverUrl) {
+        this.shortUrl = serverUrl + '/' + this.shortCode;
     }
 }

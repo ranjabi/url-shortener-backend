@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.ranjabi.urlshortener.entities.Url;
@@ -13,6 +14,9 @@ import com.ranjabi.urlshortener.entities.User;
 @Service
 public class UrlService {
     private final UrlRepository urlRepository;
+
+    @Value("${app.server.url}")
+    private String serverUrl;
 
     public UrlService(UrlRepository urlRepository) {
         this.urlRepository = urlRepository;
@@ -34,13 +38,15 @@ public class UrlService {
     public Url save(Url url) {
         url.setShortCode(generateShortCode());
 
-        return urlRepository.save(url);
+        Url savedUrl = urlRepository.save(url);
+        savedUrl.setShortUrl(serverUrl);
+
+        return savedUrl;
     }
 
     public Url save(Url url, User user) {
-        url.setShortCode(generateShortCode());
         url.setUser(user);
-
-        return urlRepository.save(url);
+        
+        return this.save(url);
     }
 }
