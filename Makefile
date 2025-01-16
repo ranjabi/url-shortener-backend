@@ -2,7 +2,7 @@ build.run:
 	./gradlew clean build -x test
 	java -jar build/libs/urlshortener-0.0.1-SNAPSHOT.jar
 
-run.dev:
+dev:
 	set -o allexport; source .env.dev.local; set +o allexport; ./gradlew bootRun --args='--spring.profiles.active=dev'
 
 docker.build:
